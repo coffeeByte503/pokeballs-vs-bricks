@@ -1,0 +1,207 @@
+<canvas id="canvas"></canvas>
+
+<img src="graphics/player red.png" id="heart_13" style="display:none;">
+<script>
+    let card = null,
+        ctx = null,
+        cv = null;
+    let ship = null;
+
+    async function main() {
+
+        cv = self.canvas;
+        cv.width = innerWidth;
+        cv.height = innerHeight;
+
+        ctx = cv.getContext("2d");
+
+        const heart_13 = self.heart_13;
+
+        ship = new SpriteFactory(heart_13);
+
+        ship.multiColumn(
+            ["center", "right", "left"],
+            new Vec2(64, 64)
+        );
+
+        ctx.drawImage(ship.get("left"), 0, 0, 256, 256)
+
+
+    }
+    window.onload = main;
+
+    class SpriteStore {
+        constructor() {
+            this.buffer = [];
+        }
+    }
+
+    class SpriteFactory {
+        constructor(spriteSheet) {
+            this.spriteSheet = spriteSheet;
+            this.size = new Vec2(spriteSheet.width, spriteSheet.height);
+            this.map = new Map();
+            this.frames = [];
+        }
+        get(name) {
+            return this.map.get(name);
+        }
+        define(name, from, size) {
+            const buffer = document.createElement("canvas");
+            buffer.width = size.x;
+            buffer.height = size.y;
+
+
+
+            buffer.getContext("2d").drawImage(
+                this.spriteSheet,
+                ...from,
+                ...this.size,
+                0, 0,
+                ...this.size
+            );
+            this.map.set(name, buffer);
+        }
+        multiColumn(names, size) {
+            names.forEach((name, i) => {
+                const buffer = document.createElement("canvas");
+
+                buffer.width = size.x;
+                buffer.height = size.y;
+
+                buffer.getContext("2d").drawImage(
+                    this.spriteSheet,
+                    size.x * i, 0,
+                    ...this.size,
+                    0, 0,
+                    ...this.size
+                );
+
+                this.map.set(name, buffer);
+            });
+        }
+    }
+
+    function renderer() {
+
+        ctx.clearRect(0, 0, cv.width, cv.height);
+
+        card.render(ctx);
+        card.update(1);
+
+        requestAnimationFrame(renderer);
+    }
+
+
+    function getEase(currentProgress, start, distance, steps, power) {
+        currentProgress /= steps / 2;
+
+        if (currentProgress < 1) {
+            return (distance / 2) * (Math.pow(currentProgress, power)) + start;
+        }
+
+        currentProgress -= 2;
+        return distance / 2 * (Math.pow(currentProgress, power) + 2) + start;
+    }
+
+    class MoveTo {
+        constructor(entity, from, to) {
+
+            this.entity = entity;
+
+            this.to = to;
+
+            this.from = from;
+
+            this.frame = 0;
+
+            this.frames = 100;
+        }
+
+        getX() {
+
+            let distance = this.to.x - this.from.x;
+            let steps = this.frames;
+            let currentProgress = this.frame;
+
+            return getEase(currentProgress, this.from.x, distance, steps, 3);
+        }
+
+        getY() {
+            let distance = this.to.y - this.from.y;
+            let steps = this.frames;
+            let currentProgress = this.frame;
+
+            return getEase(currentProgress, this.from.y, distance, steps, 3);
+        }
+
+        update(dt) {
+
+
+            this.entity.pos.set(this.getX(), this.getY())
+
+            if (this.frame < this.frames) {
+                this.frame = this.frame + 1;
+                return false;
+            } else {
+                return true;
+            }
+        }
+    }
+
+
+    class Vec2 {
+        constructor(x = 0, y = 0) {
+            this.set(x, y);
+
+            this[Symbol.iterator] = function* () {
+                yield this.x;
+                yield this.y;
+            }
+        }
+
+        set(x, y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+
+    //abstract
+    class Entity {
+        constructor(sprite) {
+            this.sprite = sprite;
+
+            this.pos = new Vec2;
+            this.vel = new Vec2;
+            this.size = new Vec2(32, 32);
+
+            this.movements = new Set;
+        }
+
+        addMovement(Movement, ...args) {
+            const movement = new Movement(this, ...args);
+            this.movements.add(movement);
+            return movement;
+        }
+
+        update(dt) {
+            const __this = this;
+            this.movements.forEach(function (movement) {
+                if (movement.update(dt)) {
+                    __this.movements.delete(movement);
+                }
+            });
+        }
+
+        render(ctx) {
+            ctx.drawImage(this.sprite, ...this.pos, ...this.size);
+        }
+    }
+
+    class Card extends Entity {
+        constructor(name, sprite) {
+            super(sprite);
+            this.name = name;
+        }
+    }
+</script>

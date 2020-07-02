@@ -1,0 +1,151 @@
+<!-- Created by Blessing Manganyi-->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Answer</title>
+    <script src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <div>
+        <div id='answer'></div>
+        <button class='button' id='next'>Next</a></button>
+    </div>
+</body>
+<script>
+    (function () {
+        var questions = [{
+            question: "How many letters in the English alphabet?",
+            choices: [46, 36, 26],
+            correctAnswer: 2
+        },
+        {
+            question: "any?",
+            choices: ["test1", "test2"],
+            correctAnswer: "test2"
+        }];
+
+        var questionCounter = 0;
+        var selections = [];
+        var quiz = $('#answer');
+
+        displayNext();
+
+        $('#next').on('click', function (e) {
+            e.preventDefault();
+
+            if (quiz.is(':animated')) {
+                return false;
+            }
+            choose();
+
+            if (isNaN(selections[questionCounter])) {
+                alert('Select answer.');
+            } else {
+                questionCounter++;
+                displayNext();
+            }
+        });
+
+        function createQuestionElement(index) {
+            var qElement = $('<div>', {
+                id: 'question'
+            });
+
+            var header = $('<h3>' + (index + 1) + '/' + questions.length + '</h3>');
+            qElement.append(header);
+
+            var question = $('<p>').append(questions[index].question);
+            qElement.append(question);
+
+            var radioButtons = createRadios(index);
+            qElement.append(radioButtons);
+
+            return qElement;
+        }
+
+        function createRadios(index) {
+            var radioList = $('<ol type="A">');
+            var item;
+            var input = '';
+            for (var i = 0; i < questions[index].choices.length; i++) {
+                item = $('<li>');
+                input = '<input type="radio" name="answer" value=' + i + ' />';
+                input += questions[index].choices[i];
+                item.append(input);
+                radioList.append(item);
+            }
+            return radioList;
+        }
+
+        function choose() {
+            selections[questionCounter] = +$('input[name="answer"]:checked').val();
+        }
+
+        function displayNext() {
+            quiz.fadeOut(function () {
+                $('#question').remove();
+
+                if (questionCounter < questions.length) {
+                    var nextQuestion = createQuestionElement(questionCounter);
+                    quiz.append(nextQuestion).fadeIn();
+                    if (!(isNaN(selections[questionCounter]))) {
+                        $('input[value=' + selections[questionCounter] + ']').prop('checked', true);
+                    }
+
+                    if (questionCounter === 1) {
+
+                    } else if (questionCounter === 0) {
+
+
+                        $('#next').show();
+                    }
+                } else {
+                    var scoreElem = displayScore();
+                    quiz.append(scoreElem).fadeIn();
+                    $('#next').hide();
+                }
+            });
+        }
+
+        function displayScore() {
+            var score = $('<p>', { id: 'question' });
+
+            var numCorrect = 0;
+            for (var i = 0; i < selections.length; i++) {
+
+
+                /*new code*/
+
+                var correctAnswer = questions[i].correctAnswer;
+
+                //check questions width words as answer
+                if (typeof correctAnswer === "string") {
+
+                    var correctAnswer = questions[i].correctAnswer;
+                    var choices = questions[i].choices;
+
+                    var correctAnswerIndexInArray = choices.indexOf(correctAnswer);
+
+                    if (selections[i] == correctAnswerIndexInArray) {
+                        numCorrect++;
+                    }
+                } else {//if correctAnswer is a number
+
+                    if (selections[i] === correctAnswer) {
+                        numCorrect++;
+                    }
+                }
+
+            }
+
+            score.append('Score: ' + numCorrect * 20 + ' points of 100.');
+            return score;
+        }
+    })();
+</script>
+
+</html>

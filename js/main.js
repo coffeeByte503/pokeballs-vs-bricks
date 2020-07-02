@@ -14,7 +14,6 @@ import Engine from "./engine/Engine.js";
 import LoadManager from "./loads/LoadManager.js";
 
 import {
-    launchFullScreen,
     colors,
     sleep
 } from "./Util.js";
@@ -29,7 +28,7 @@ import {
 } from "./Maths.js";
 
 import Cannon from "./entities/Cannon.js";
-import Entity, {
+import {
     balls,
     bricks,
     effects,
@@ -128,7 +127,7 @@ async function main() {
                 cannon.fireCount = 0;
                 obtainableBalls.add(new ObtainableBall(
                     cannon.ballSprite,
-                    new Vector(random(0, innerWidth - 16), -25),
+                    new Vector(random(32, innerWidth - 32), -25),
                     new Vector(16, 16),
                     90
                 ))
@@ -322,7 +321,8 @@ async function main() {
     renderer.start();
 
     alert("This is not the finally game");
-    alert("INSTRUCTIONS:\n swipe lef or right to move the cannon angle, you can also click , it will shoot automatically");
+    alert("Aviable for mobile only");
+    alert("INSTRUCTIONS:\nSwipe lef or right to move the cannon angle, you can also click , it will shoot automatically");
 
     Cannon.calcTrajectory(trScreen.context, cannon, 40);
 

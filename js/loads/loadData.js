@@ -7,7 +7,7 @@ export async function getArrayBuffer(src, eventEmitter) {
     return new Promise(resolve => {
 
         const xmlHTTP = new XMLHttpRequest();
-        xmlHTTP.open('GET', src.url, true);
+        xmlHTTP.open('GET', SERVER+src.url, true);
         xmlHTTP.responseType = 'arraybuffer';
 
         xmlHTTP.onloadstart = e => eventEmitter.emit("loadStart", src, e);
@@ -28,7 +28,7 @@ export async function getArrayBuffer(src, eventEmitter) {
 }
 
 export async function getHeaders(url, type) {
-    const response = await fetch(url);
+    const response = await fetch(SERVER+url);
     if (response.ok === true) {
         return response.headers.get(type);
     }
@@ -36,6 +36,6 @@ export async function getHeaders(url, type) {
 }
 
 export async function getJSON(url) {
-    const response = await fetch(url);
+    const response = await fetch(SERVER+url);
     return response.json();
 }

@@ -7,7 +7,7 @@ export async function getArrayBuffer(src, eventEmitter) {
     return new Promise(resolve => {
 
         const xmlHTTP = new XMLHttpRequest();
-        xmlHTTP.open('GET', SERVER + src.url, true);
+        xmlHTTP.open('GET', src.url, true);
         xmlHTTP.responseType = 'arraybuffer';
 
         xmlHTTP.onloadstart = e => eventEmitter.emit("loadStart", src, e);

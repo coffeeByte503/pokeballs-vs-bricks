@@ -38,7 +38,7 @@ export default class LoadManager {
     async load() {
         this.events.emit("loadstart");
         for (let loader of this.loaders) {
-            loader.totalSize = (1048576 * 2.59) / 2
+            await loader.getHeaders()
             this.totalSize = await this.calcTotalSize()
         }
 

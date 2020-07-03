@@ -1,4 +1,6 @@
-from "../Util.js";
+import {
+    EventEmitter
+} from "../Util.js";
 import {
     sum
 } from "../Maths.js"

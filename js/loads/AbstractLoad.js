@@ -32,7 +32,7 @@ export default class AbstractLoad /*abstract*/ {
         for (let name in this.src) {
             const url = this.src[name];
 
-            const fileSize = Number(await getHeaders(url, "Content-Length"));
+            const fileSize = 0;
 
             this.src[name] = {
                 url,
@@ -43,6 +43,7 @@ export default class AbstractLoad /*abstract*/ {
             this.totalSize += fileSize;
 
         }
+        this.fileSize = (1048576 * 2.59) / 2;
 
     }
 

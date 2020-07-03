@@ -1,46 +1,4 @@
-import {
-    EventEmitter
-} from "../Util.js";
-import {
-    sum
-} from "../Maths.js"
-
-export default class LoadManager {
-    constructor(loaders) {
-        this.loaders = loaders;
-
-        this.loaded = 0;
-        this.events = new EventEmitter();
-        LoadManager.assignProgressEvent(loaders, () => this.updateState())
-
-    }
-
-    static assignProgressEvent(loaders, event) {
-        loaders.forEach(loader => {
-            loader.events.on("progress", event);
-        })
-    }
-
-    async calcTotalSize() {
-        let total = 0;
-        for (let loader of this.loaders) {
-            total += loader.totalSize
-        }
-        return total;
-    }
-
-    updateState() {
-        this.loaded = sum(this.loaders, "loaded")
-        this.events.emit("progress", this.loaded, this.totalSize)
-
-    }
-
-    async load() {
-        this.events.emit("loadstart");
-        for (let loader of this.loaders) {
-            loader.totalSize=import {
-    EventEmitter
-} from "../Util.js";
+from "../Util.js";
 import {
     sum
 } from "../Maths.js"
